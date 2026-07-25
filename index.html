@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <title>RYAN · Editor Video</title>
+
+    <style>
+        /* ----- VARIABEL ----- */
+        :root {
+            --primary: #ff4d6d;
+            --primary-glow: #ff1a4f;
+            --bg-dark: #0b0b12;
+            --glass-bg: rgba(255, 255, 255, 0.04);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f0f2f8;
+            --text-muted: #9aa4be;
+            --shadow-heavy: 0 30px 60px -15px rgba(0, 0, 0, 0.8);
+        }
+
+        /* ----- RESET & BASE ----- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: var(--bg-dark);
+            background-image:
+                radial-gradient(circle at 10% 10%, rgba(255, 77, 109, 0.15) 0%, transparent 45%),
+                radial-gradient(circle at 90% 90%, var(--primary) 0%, var(--bg-dark) 70%);
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 12px;
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* ----- BLOBS CAIR ----- */
+        .blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            mix-blend-mode: screen;
+            opacity: 0.35;
+            animation: floatBlob 14s infinite alternate ease-in-out;
+            pointer-events: none;
+            will-change: transform, border-radius;
+            z-index: 0;
+        }
+
+        .blob-1 {
+            width: 450px;
+            height: 450px;
+            background: var(--primary);
+            top: -12%;
+            left: -5%;
+            animation-delay: 0s;
+        }
+
+        .blob-2 {
+            width: 550px;
+            height: 550px;
+            background: linear-gradient(135deg, var(--primary), #a855f7);
+            bottom: -15%;
+            right: -8%;
+            animation-delay: -5s;
+        }
+
+        @keyframes floatBlob {
+            0% {
+                transform: translate(0, 0) scale(1) rotate(0deg);
+                border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+            }
+            50% {
+                transform: translate(60px, -70px) scale(1.15) rotate(80deg);
+                border-radius: 70% 30% 50% 50% / 30% 60% 40% 70%;
+            }
+            100% {
+                transform: translate(-30px, 30px) scale(0.9) rotate(160deg);
+                border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+            }
+        }
+
+        /* ----- GLASS CARD ----- */
+        .glass-card {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 1000px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(32px) saturate(180%);
+            -webkit-backdrop-filter: blur(32px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 20px 16px 24px;
+            box-shadow: var(--shadow-heavy);
+            transition: padding 0.2s;
+        }
+
+        /* ----- HEADER ----- */
+        header {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #fff 30%, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        nav {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+            width: 100%;
+            justify-content: space-around;
+        }
+
+        nav a {
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 6px 12px;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 30px;
+            transition: all 0.25s;
+            letter-spacing: 0.2px;
+            touch-action: manipulation;
+        }
+
+        nav a.active,
+        nav a:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(4px);
+        }
+
+        /* ----- HERO ----- */
+        .hero h1 {
+            font-size: 28px;
+            font-weight: 800;
+            line-height: 1.2;
+            letter-spacing: -0.5px;
+            margin-bottom: 14px;
+        }
+
+        .hero h1 .highlight {
+            background: linear-gradient(135deg, #ffffff 20%, var(--primary) 80%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero .badge {
+            display: inline-block;
+            background: rgba(255, 77, 109, 0.18);
+            padding: 3px 14px;
+            border-radius: 40px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.4px;
+            color: var(--primary);
+            border: 1px solid rgba(255, 77, 109, 0.25);
+            margin-bottom: 16px;
+            backdrop-filter: blur(4px);
+        }
+
+        .hero p {
+            color: var(--text-muted);
+            font-size: 15px;
+            max-width: 100%;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        /* ----- TOMBOL ----- */
+        .cta-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 32px;
+        }
+
+        .btn {
+            padding: 14px 20px;
+            border-radius: 40px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            letter-spacing: 0.3px;
+            width: 100%;
+            touch-action: manipulation;
+        }
+
+        .btn-primary {
+            background: #fff;
+            color: #0b0b12;
+            box-shadow: 0 8px 20px rgba(255, 77, 109, 0.25);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 14px 30px rgba(255, 77, 109, 0.35);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.13);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* ----- PORTFOLIO VIDEO ----- */
+        .portfolio {
+            margin-bottom: 28px;
+        }
+
+        .portfolio h2 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #fff;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+        }
+
+        .video-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 16px 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .video-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-4px);
+        }
+
+        .video-thumb {
+            font-size: 28px;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .video-card h4 {
+            color: #fff;
+            font-size: 14px;
+            margin-bottom: 3px;
+        }
+
+        .video-card p {
+            color: var(--text-muted);
+            font-size: 11px;
+        }
+
+        /* ----- STATS ----- */
+        .stats {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            border-top: 1px solid var(--glass-border);
+            padding-top: 20px;
+        }
+
+        .stat-item h3 {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #fff;
+        }
+
+        .stat-item h3 span {
+            color: var(--primary);
+        }
+
+        .stat-item p {
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-top: 2px;
+            font-weight: 400;
+            letter-spacing: 0.2px;
+        }
+
+        /* ----- COLOR PICKER ----- */
+        .color-picker-container {
+            position: fixed;
+            top: 12px;
+            right: 12px;
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 6px 12px 6px 14px;
+            border-radius: 60px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            z-index: 20;
+            color: var(--text-muted);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .color-picker-container label {
+            cursor: default;
+        }
+
+        .color-picker-container input[type="color"] {
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            background: transparent;
+            padding: 0;
+            outline: 2px solid rgba(255, 255, 255, 0.2);
+            outline-offset: 2px;
+            transition: outline 0.2s;
+            touch-action: manipulation;
+        }
+
+        .color-picker-container input[type="color"]:hover {
+            outline-color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* ===== TABLET & DESKTOP ===== */
+        @media (min-width: 600px) {
+            body {
+                padding: 20px;
+            }
+
+            .glass-card {
+                padding: 30px 32px 36px;
+                border-radius: 28px;
+            }
+
+            header {
+                flex-direction: row;
+                align-items: center;
+                margin-bottom: 40px;
+                gap: 16px 20px;
+            }
+
+            .logo {
+                font-size: 26px;
+            }
+
+            nav {
+                width: auto;
+                justify-content: flex-end;
+                gap: 6px;
+            }
+
+            nav a {
+                font-size: 15px;
+                padding: 6px 14px;
+            }
+
+            .hero h1 {
+                font-size: 38px;
+            }
+
+            .hero .badge {
+                font-size: 12px;
+                padding: 4px 16px;
+            }
+
+            .hero p {
+                font-size: 16px;
+                max-width: 480px;
+            }
+
+            .cta-buttons {
+                flex-direction: row;
+                gap: 12px;
+                margin-bottom: 40px;
+            }
+
+            .btn {
+                width: auto;
+                padding: 12px 28px;
+                font-size: 15px;
+            }
+
+            .portfolio h2 {
+                font-size: 24px;
+            }
+
+            .video-grid {
+                grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+                gap: 16px;
+            }
+
+            .video-card {
+                padding: 20px 16px;
+            }
+
+            .video-thumb {
+                font-size: 32px;
+            }
+
+            .video-card h4 {
+                font-size: 15px;
+            }
+
+            .video-card p {
+                font-size: 12px;
+            }
+
+            .stats {
+                flex-direction: row;
+                gap: 30px 50px;
+                padding-top: 28px;
+            }
+
+            .stat-item h3 {
+                font-size: 26px;
+            }
+
+            .color-picker-container {
+                top: 18px;
+                right: 18px;
+                padding: 8px 16px 8px 18px;
+                font-size: 12px;
+                gap: 10px;
+            }
+
+            .color-picker-container input[type="color"] {
+                width: 26px;
+                height: 26px;
+            }
+
+            .blob-1 {
+                width: 350px;
+                height: 350px;
+            }
+            .blob-2 {
+                width: 420px;
+                height: 420px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .glass-card {
+                padding: 40px 44px 44px;
+                border-radius: 32px;
+            }
+
+            .hero h1 {
+                font-size: 52px;
+            }
+
+            .hero p {
+                font-size: 18px;
+                max-width: 520px;
+            }
+
+            .stat-item h3 {
+                font-size: 30px;
+            }
+
+            .logo {
+                font-size: 28px;
+            }
+
+            .blob-1 {
+                width: 450px;
+                height: 450px;
+            }
+            .blob-2 {
+                width: 550px;
+                height: 550px;
+            }
+        }
+
+        .btn, nav a, .color-picker-container input {
+            touch-action: manipulation;
+        }
+
+        input, button {
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- BLOBS -->
+    <div class="blob blob-1" aria-hidden="true"></div>
+    <div class="blob blob-2" aria-hidden="true"></div>
+
+    <!-- COLOR PICKER -->
+    <div class="color-picker-container">
+        <label for="bg-color">🎨 Tema</label>
+        <input type="color" id="bg-color" value="#ff4d6d" aria-label="Ubah warna utama" />
+    </div>
+
+    <!-- MAIN CARD -->
+    <main class="glass-card">
+
+        <header>
+            <div class="logo">🎬 RYAN</div>
+            <nav>
+                <a href="#" class="active">Beranda</a>
+                <a href="#portfolio">Proyek</a>
+                <a href="#kontak">Kontak</a>
+            </nav>
+        </header>
+
+        <section class="hero">
+            <div class="badge">✧ editor video & motion</div>
+            <h1>
+                Halo, saya <br />
+                <span class="highlight">Ryan Kreator</span>
+            </h1>
+            <p>
+                Merangkai cerita lewat gambar & suara. <br />
+                Spesialisasi di bidang <strong style="color:#fff;">video editing</strong>,
+                color grading, dan efek visual yang memukau.
+            </p>
+            <div class="cta-buttons">
+                <button class="btn btn-primary" onclick="document.getElementById('portfolio').scrollIntoView({behavior:'smooth'})">▶ Lihat Karya</button>
+                <button class="btn btn-secondary" onclick="alert('📩 Hubungi Ryan via email: ryan@editvideo.id')">💬 Hubungi</button>
+            </div>
+        </section>
+
+        <!-- ===== PORTFOLIO VIDEO ===== -->
+        <section class="portfolio" id="portfolio">
+            <h2>🎬 Karya Video</h2>
+            <div class="video-grid">
+                <div class="video-card" onclick="window.open('https://youtube.com/watch?v=xxxxx1', '_blank')">
+                    <span class="video-thumb">▶</span>
+                    <h4>Cinematic Short</h4>
+                    <p>2 menit · 2024</p>
+                </div>
+                <div class="video-card" onclick="window.open('https://youtube.com/watch?v=xxxxx2', '_blank')">
+                    <span class="video-thumb">▶</span>
+                    <h4>Motion Graphics</h4>
+                    <p>1.5 menit · 2024</p>
+                </div>
+                <div class="video-card" onclick="window.open('https://youtube.com/watch?v=xxxxx3', '_blank')">
+                    <span class="video-thumb">▶</span>
+                    <h4>Color Grading</h4>
+                    <p>3 menit · 2023</p>
+                </div>
+                <div class="video-card" onclick="window.open('https://youtube.com/watch?v=xxxxx4', '_blank')">
+                    <span class="video-thumb">▶</span>
+                    <h4>Event Highlight</h4>
+                    <p>4 menit · 2023</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== STATS ===== -->
+        <section class="stats">
+            <div class="stat-item">
+                <h3>🎞️ <span>50+</span></h3>
+                <p>Video diedit</p>
+            </div>
+            <div class="stat-item">
+                <h3>🏆 <span>8+</span></h3>
+                <p>Klien puas</p>
+            </div>
+            <div class="stat-item">
+                <h3>⏳ <span>4+</span></h3>
+                <p>Tahun pengalaman</p>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        (function() {
+            const colorPicker = document.getElementById('bg-color');
+
+            const saved = localStorage.getItem('ryan-theme-color');
+            if (saved) {
+                document.documentElement.style.setProperty('--primary', saved);
+                document.documentElement.style.setProperty('--primary-glow', saved);
+                colorPicker.value = saved;
+            }
+
+            colorPicker.addEventListener('input', function(e) {
+                const hex = e.target.value;
+                document.documentElement.style.setProperty('--primary', hex);
+                document.documentElement.style.setProperty('--primary-glow', hex);
+                localStorage.setItem('ryan-theme-color', hex);
+            });
+
+            document.querySelectorAll('.btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.style.transform = 'scale(0.94)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 180);
+                });
+            });
+
+            document.querySelectorAll('nav a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.querySelectorAll('nav a').forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                    const target = this.getAttribute('href');
+                    if (target && target.startsWith('#')) {
+                        document.querySelector(target)?.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+
+        })();
+    </script>
+
+</body>
+                             </html>
